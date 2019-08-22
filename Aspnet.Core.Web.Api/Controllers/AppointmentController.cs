@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetCore.WebApi.Controllers
 {
+    [Route("api")]
+    [ApiController]
     public class AppointmentController:ControllerBase
     {
         

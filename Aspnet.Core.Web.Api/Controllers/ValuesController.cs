@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetCore.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/values/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
