@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetCore.WebApi.Controllers
 {
-    [Route("api")]
+    [Route("api/appointment/")]
     [ApiController]
     public class AppointmentController:ControllerBase
     {
@@ -115,7 +115,7 @@ namespace AspNetCore.WebApi.Controllers
         }
         
         [HttpGet]
-        [Route("/bydate", Name = nameof(GetAppointmentsByDate))]
+        [Route("bydate", Name = nameof(GetAppointmentsByDate))]
         public ActionResult GetAppointmentsByDate(AppointmentGetByDateDto appointmentByDateDto)
         {
             var appointmentItems =
