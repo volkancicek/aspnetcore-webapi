@@ -1,0 +1,6 @@
+.vs/
+Aspnet.Core.Web.Api/obj/
+Aspnet.Core.Web.Api/Properties/
+Aspnet.Core.Web.Api/bin/
+AspNetCore.WebApi.Test/obj/
+AspNetCore.WebApi.Test/bin/

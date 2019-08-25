@@ -1,4 +1,6 @@
-﻿namespace AspNetCore.WebApi.Dtos
+﻿using System;
+
+namespace AspNetCore.WebApi.Dtos
 {
     public class AppointmentUpdateStatusDto
     {

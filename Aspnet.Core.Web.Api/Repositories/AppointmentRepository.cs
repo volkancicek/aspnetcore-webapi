@@ -31,6 +31,7 @@ namespace AspNetCore.WebApi.Repositories
 
         public AppointmentItem Update(int id, AppointmentItem item)
         {
+            item.Updated = DateTime.Now;
             _appointmentDbContext.AppointmentItems.Update(item);
             return item;
         }
@@ -38,7 +39,7 @@ namespace AspNetCore.WebApi.Repositories
         public IQueryable<AppointmentItem> GetByDate(DateTime startDate, DateTime endDate)
         {
             IQueryable<AppointmentItem> appointmentItems = _appointmentDbContext.AppointmentItems.
-                Where(x => x.Created > startDate && x.Created < endDate ).OrderBy(x => x.Price);
+                Where(x => x.AppointmentDate > startDate && x.AppointmentDate < endDate ).OrderBy(x => x.Price);
             
             return appointmentItems;
         }

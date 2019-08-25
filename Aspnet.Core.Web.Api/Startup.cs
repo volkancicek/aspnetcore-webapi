@@ -1,6 +1,6 @@
-﻿using System;
-using AspNetCore.WebApi.Dtos;
+﻿using AspNetCore.WebApi.Dtos;
 using AspNetCore.WebApi.Entities;
+using AspNetCore.WebApi.Helpers;
 using AspNetCore.WebApi.Repositories;
 using AspNetCore.WebApi.Services;
 using AutoMapper;
@@ -13,8 +13,8 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace AspNetCore.WebApi
 {
@@ -50,12 +50,8 @@ namespace AspNetCore.WebApi
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            //services.AddScoped<IUrlHelper>(x =>
-            //{
-            //    var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
-            //    var factory = x.GetRequiredService<IUrlHelperFactory>();
-            //    return factory.GetUrlHelper(actionContext);
-            //});
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -65,7 +61,7 @@ namespace AspNetCore.WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -84,8 +80,8 @@ namespace AspNetCore.WebApi
                         var errorFeature = context.Features.Get<IExceptionHandlerFeature>();
                         if (errorFeature != null)
                         {
-                            //var logger = LoggerFactory.CreateLogger("Global exception logger");
-                            //logger.LogError(500, errorFeature.Error, errorFeature.Error.Message);
+                            var logger = loggerFactory.CreateLogger("Global exception logger");
+                            logger.LogError(500, errorFeature.Error, errorFeature.Error.Message);
                         }
 
                         await context.Response.WriteAsync("There was an error");

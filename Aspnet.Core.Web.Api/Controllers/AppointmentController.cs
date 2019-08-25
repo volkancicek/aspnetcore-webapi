@@ -49,16 +49,16 @@ namespace AspNetCore.WebApi.Controllers
                 return BadRequest();
             }
 
-            AppointmentItem toAdd = Mapper.Map<AppointmentItem>(appointmentCreateDto);
+            var appointmentItem = Mapper.Map<AppointmentItem>(appointmentCreateDto);
 
-            _appointmentRepository.Add(toAdd);
+            _appointmentRepository.Add(appointmentItem);
 
             if (!_appointmentRepository.Save())
             {
                 throw new Exception("Creating an appointment failed on save!");
             }
 
-            AppointmentItem newAppointmentItem = _appointmentRepository.GetSingle(toAdd.Id);
+            AppointmentItem newAppointmentItem = _appointmentRepository.GetSingle(appointmentItem.Id);
 
             return CreatedAtRoute(nameof(GetSingleAppointment), new { id = newAppointmentItem.Id },
                 Mapper.Map<AppointmentItemDto>(newAppointmentItem));
@@ -116,7 +116,7 @@ namespace AspNetCore.WebApi.Controllers
         
         [HttpGet]
         [Route("/bydate", Name = nameof(GetAppointmentsByDate))]
-        public ActionResult GetAppointmentsByDate([FromBody]AppointmentGetByDateDto appointmentByDateDto)
+        public ActionResult GetAppointmentsByDate(AppointmentGetByDateDto appointmentByDateDto)
         {
             var appointmentItems =
                 _appointmentRepository.GetByDate(appointmentByDateDto.StartDate, appointmentByDateDto.EndDate);
