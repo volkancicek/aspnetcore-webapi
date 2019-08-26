@@ -4,6 +4,7 @@ using AspNetCore.WebApi.Entities;
 using AspNetCore.WebApi.Repositories;
 using AspNetCore.WebApi.Helpers;
 using Microsoft.Extensions.Options;
+using AutoMapper;
 
 namespace AspNetCore.WebApi.Services
 {
@@ -12,10 +13,10 @@ namespace AspNetCore.WebApi.Services
         private AppSettings appSettings { get; set; }
         private AppointmentsHelper appointmentsHelper;
 
-        public InitDataService(IOptions<AppSettings> settings)
+        public InitDataService(IOptions<AppSettings> settings, IMapper mapper)
         {
             appSettings = settings.Value;
-            appointmentsHelper = new AppointmentsHelper(settings);
+            appointmentsHelper = new AppointmentsHelper(settings, mapper);
         }
         public async Task Initialize(AppointmentDbContext context)
         {

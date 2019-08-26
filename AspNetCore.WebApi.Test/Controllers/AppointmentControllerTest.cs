@@ -10,6 +10,7 @@ using Moq;
 using System.Threading.Tasks;
 using Xunit;
 using AspNetCore.WebApi.Dtos;
+using AutoMapper;
 
 namespace AspNetCore.WebApi.Test
 {
@@ -17,20 +18,15 @@ namespace AspNetCore.WebApi.Test
     {
         private AppointmentController _controller;
         private Mock<IAppointmentRepository> _repository;
+        private AppointmentController _sut;
+        private Mock<IMapper> _mapper;
         public AppointmentControllerTest()
         {
             _repository = new Mock<IAppointmentRepository>();
-
-            _controller = new AppointmentController(_repository.Object)
-            {
-                ControllerContext = new ControllerContext
-                {
-                    HttpContext = new DefaultHttpContext()
-                }
-            };
-
-
+            _mapper = new Mock<IMapper>();
+            _controller = new AppointmentController(_repository.Object, _mapper.Object);
         }
+
         [Fact]
         public void GetSingleAppointmentTest()
         {

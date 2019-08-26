@@ -14,10 +14,13 @@ namespace AspNetCore.WebApi.Controllers
     {
         
         private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IMapper _mapper;
 
-        public AppointmentController( IAppointmentRepository appointmentRepository)
+
+        public AppointmentController( IAppointmentRepository appointmentRepository, IMapper mapper)
         {
             _appointmentRepository = appointmentRepository;
+            _mapper = mapper;
         }
         
         [HttpDelete]
@@ -49,7 +52,7 @@ namespace AspNetCore.WebApi.Controllers
                 return BadRequest();
             }
 
-            var appointmentItem = Mapper.Map<AppointmentItem>(appointmentCreateDto);
+            var appointmentItem = _mapper.Map<AppointmentItem>(appointmentCreateDto);
 
             _appointmentRepository.Add(appointmentItem);
 
@@ -61,7 +64,7 @@ namespace AspNetCore.WebApi.Controllers
             AppointmentItem newAppointmentItem = _appointmentRepository.GetSingle(appointmentItem.Id);
 
             return CreatedAtRoute(nameof(GetSingleAppointment), new { id = newAppointmentItem.Id },
-                Mapper.Map<AppointmentItemDto>(newAppointmentItem));
+                _mapper.Map<AppointmentItemDto>(newAppointmentItem));
         }
         
         [HttpPatch("{id:int}", Name = nameof(UpdateAppointmentStatus))]
@@ -79,7 +82,7 @@ namespace AspNetCore.WebApi.Controllers
                 return NotFound();
             }
 
-            AppointmentUpdateStatusDto appointmentUpdateStatusDto = Mapper.Map<AppointmentUpdateStatusDto>(existingEntity);
+            AppointmentUpdateStatusDto appointmentUpdateStatusDto = _mapper.Map<AppointmentUpdateStatusDto>(existingEntity);
             appointmentStatus.ApplyTo(appointmentUpdateStatusDto, ModelState);
 
             TryValidateModel(appointmentUpdateStatusDto);
@@ -89,7 +92,7 @@ namespace AspNetCore.WebApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            Mapper.Map(appointmentUpdateStatusDto, existingEntity);
+            _mapper.Map(appointmentUpdateStatusDto, existingEntity);
             AppointmentItem updated = _appointmentRepository.Update(id, existingEntity);
 
             if (!_appointmentRepository.Save())
@@ -97,7 +100,7 @@ namespace AspNetCore.WebApi.Controllers
                 throw new Exception("Updating an appointment status failed on save!");
             }
 
-            return Ok(Mapper.Map<AppointmentItemDto>(updated));
+            return Ok(_mapper.Map<AppointmentItemDto>(updated));
         }  
        
         [HttpGet]
@@ -111,7 +114,7 @@ namespace AspNetCore.WebApi.Controllers
                 return NotFound();
             }
 
-            return Ok(Mapper.Map<AppointmentItemDto>(appointmentItem));
+            return Ok(_mapper.Map<AppointmentItemDto>(appointmentItem));
         }
         
         [HttpGet]
@@ -128,7 +131,7 @@ namespace AspNetCore.WebApi.Controllers
 
             foreach (var item in appointmentItems)
             {
-                Mapper.Map<AppointmentItemDto>(item);
+                _mapper.Map<AppointmentItemDto>(item);
             }
 
             return Ok(appointmentItems);

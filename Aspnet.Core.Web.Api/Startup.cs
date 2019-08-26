@@ -31,6 +31,14 @@ namespace AspNetCore.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            //services.AddAutoMapper(typeof(Startup));
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MapperProfile());
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             services.AddOptions();
             services.AddDbContext<AppointmentDbContext>(opt => opt.UseInMemoryDatabase("AppointmentDatabase"));
@@ -91,12 +99,12 @@ namespace AspNetCore.WebApi
 
             app.UseHttpsRedirection();
             app.UseCors("AllowAllOrigins");
-            Mapper.Initialize(mapper =>
-            {
-                mapper.CreateMap<AppointmentItem, AppointmentItemDto>().ReverseMap();
-                mapper.CreateMap<AppointmentItem, AppointmentUpdateStatusDto>().ReverseMap();
-                mapper.CreateMap<AppointmentItem, AppointmentCreateDto>().ReverseMap();
-            });
+            //Mapper.Initialize(mapper =>
+            //{
+            //    mapper.CreateMap<AppointmentItem, AppointmentItemDto>().ReverseMap();
+            //    mapper.CreateMap<AppointmentItem, AppointmentUpdateStatusDto>().ReverseMap();
+            //    mapper.CreateMap<AppointmentItem, AppointmentCreateDto>().ReverseMap();
+            //});
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();

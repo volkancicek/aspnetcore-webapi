@@ -10,17 +10,19 @@ namespace AspNetCore.WebApi.Helpers
     public class AppointmentsHelper : IAppointmentsHelper
     {
         private Random rand = new Random();
-        private AppSettings appSettings { get; set; }
+        private AppSettings _appSettings;
+        private IMapper _mapper;
 
-        public AppointmentsHelper(IOptions<AppSettings> settings)
+        public AppointmentsHelper(IOptions<AppSettings> settings, IMapper mapper)
         {
-            appSettings = settings.Value;
+            _appSettings = settings.Value;
+            _mapper = mapper;
         }
 
         public void ScheduleRandomDateAppointment(AppointmentRepository repository, AppointmentCreateDto appointmentCreateDto)
         {
-            var appointmentItem = Mapper.Map<AppointmentItem>(appointmentCreateDto);
-            appointmentItem.AppointmentDate = GetRandomAppointmentDate(appSettings.MaximumDaysForRandomAppointmentDate);
+            var appointmentItem = _mapper.Map<AppointmentItem>(appointmentCreateDto);
+            appointmentItem.AppointmentDate = GetRandomAppointmentDate(_appSettings.MaximumDaysForRandomAppointmentDate);
             repository.Add(appointmentItem);
             repository.Save();
         }
