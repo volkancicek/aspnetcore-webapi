@@ -10,19 +10,19 @@ namespace AspNetCore.WebApi.Controllers
 {
     [Route("api/appointment/")]
     [ApiController]
-    public class AppointmentController:ControllerBase
+    public class AppointmentController : ControllerBase
     {
-        
+
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IMapper _mapper;
 
 
-        public AppointmentController( IAppointmentRepository appointmentRepository, IMapper mapper)
+        public AppointmentController(IAppointmentRepository appointmentRepository, IMapper mapper)
         {
             _appointmentRepository = appointmentRepository;
             _mapper = mapper;
         }
-        
+
         [HttpDelete]
         [Route("{id:int}", Name = nameof(DeleteAppointment))]
         public ActionResult DeleteAppointment(int id)
@@ -43,7 +43,7 @@ namespace AspNetCore.WebApi.Controllers
 
             return NoContent();
         }
-        
+
         [HttpPost(Name = nameof(CreateAppointment))]
         public ActionResult<AppointmentItemDto> CreateAppointment([FromBody] AppointmentCreateDto appointmentCreateDto)
         {
@@ -116,10 +116,10 @@ namespace AspNetCore.WebApi.Controllers
 
             return Ok(_mapper.Map<AppointmentItemDto>(appointmentItem));
         }
-        
+
         [HttpGet]
         [Route("bydate", Name = nameof(GetAppointmentsByDate))]
-        public ActionResult GetAppointmentsByDate(AppointmentGetByDateDto appointmentByDateDto)
+        public ActionResult GetAppointmentsByDate([FromBody] AppointmentGetByDateDto appointmentByDateDto)
         {
             var appointmentItems =
                 _appointmentRepository.GetByDate(appointmentByDateDto.StartDate, appointmentByDateDto.EndDate);
@@ -135,6 +135,6 @@ namespace AspNetCore.WebApi.Controllers
             }
 
             return Ok(appointmentItems);
-        } 
+        }
     }
 }
