@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Newtonsoft.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace AspNetCore.WebApi.Test
 {
@@ -29,7 +30,19 @@ namespace AspNetCore.WebApi.Test
             _mapper = GetMapper();
             _repository = new Mock<IAppointmentRepository>();
             _controller = new AppointmentController(_repository.Object, _mapper);
+            Setup();
+        }
+
+        public void Setup()
+        {
             _repository.Setup(x => x.Save()).Returns(true);
+
+            var objectValidator = new Mock<IObjectModelValidator>();
+            objectValidator.Setup(o => o.Validate(It.IsAny<ActionContext>(),
+                                              It.IsAny<ValidationStateDictionary>(),
+                                              It.IsAny<string>(),
+                                              It.IsAny<Object>()));
+            _controller.ObjectValidator = objectValidator.Object;
         }
 
         public class DeleteAppointmentTests : AppointmentControllerTest
@@ -85,7 +98,7 @@ namespace AspNetCore.WebApi.Test
             }
 
             [Fact]
-            public void Should_return_bad_request_with_empty_appointment()
+            public void Should_return_bad_request_to_empty_appointment()
             {
                 var result = _controller.CreateAppointment(null);
 
@@ -98,17 +111,30 @@ namespace AspNetCore.WebApi.Test
             [Fact]
             public void Should_update_existing_item_status()
             {
-                var operations = new List<Operation<AppointmentUpdateStatusDto>>();
-                var operation = new Operation<AppointmentUpdateStatusDto>("replace", "/Status", "", AppointmentStatus.Completed);
-
-
-                var updateItem = new AppointmentUpdateStatusDto() { Status = AppointmentStatus.Completed };
+                var appointmentItem = new AppointmentItem() { Id = 1, Status = AppointmentStatus.Completed };
                 var patchObject = new JsonPatchDocument<AppointmentUpdateStatusDto>();
-                patchObject.ApplyTo(updateItem);
-                _repository.Setup(x => x.GetSingle(1)).Returns(new AppointmentItem() { Id=1,Status=AppointmentStatus.Active});
-                var result = _controller.UpdateAppointmentStatus(1, patchObject);
+                patchObject.Replace<AppointmentStatus>(s => s.Status, AppointmentStatus.Completed);
+                _repository.Setup(x => x.GetSingle(1)).Returns(appointmentItem);
+                _repository.Setup(x => x.Update(1, It.IsAny<AppointmentItem>())).Returns(appointmentItem);
+                var result = _controller.UpdateAppointmentStatus(1, patchObject).Result as OkObjectResult;
+                _repository.Verify(x => x.GetSingle(1), Times.Once);
+                _repository.Verify(x => x.Update(1,appointmentItem), Times.Once);
+
+                Assert.NotNull(result);
+                Assert.IsType<AppointmentItemDto>(result.Value);
+                Assert.Equal(AppointmentStatus.Completed, (result.Value as AppointmentItemDto).Status);
+            }
+
+            [Fact]
+            public void Should_not_found_unknown_item()
+            {
+                var patchObject = new JsonPatchDocument<AppointmentUpdateStatusDto>();
+                patchObject.Replace<AppointmentStatus>(s => s.Status, AppointmentStatus.Completed);
+                var result = _controller.UpdateAppointmentStatus(1, patchObject).Result;
                 _repository.Verify(x => x.GetSingle(1), Times.Once);
 
+                Assert.NotNull(result);
+                Assert.IsType<NotFoundResult>(result);
 
             }
         }
@@ -158,18 +184,42 @@ namespace AspNetCore.WebApi.Test
 
         }
 
-        public class GetAppointmentsByDateTests
+        public class GetAppointmentsByDateTests:AppointmentControllerTest
         {
             [Fact]
             public void Should_get_appointments_by_date()
             {
-                // To be implemented
+                var dto = new AppointmentGetByDateDto()
+                {
+                    StartDate = DateTime.Now,
+                    EndDate = DateTime.Now.AddMonths(1)
+                };
+                var item1 = new AppointmentItem { Id = 1, AppointmentDate=DateTime.Now.AddDays(5), CustomerName = "test1" };
+                var item2 = new AppointmentItem { Id = 2, AppointmentDate = DateTime.Now.AddDays(15), CustomerName = "test2" };
+                var itemList = Enumerable.Empty<AppointmentItem>().AsQueryable();
+                itemList.Append(item1);
+                itemList.Append(item2);
+
+                _repository.Setup(x => x.GetByDate(It.IsAny<DateTime>(), It.IsAny<DateTime>())).Returns(itemList);
+                var result = _controller.GetAppointmentsByDate(dto) as OkObjectResult;
+                _repository.Verify(x => x.GetByDate(dto.StartDate, dto.EndDate), Times.Once);
+
+                Assert.NotNull(result);
+                Assert.IsType<OkObjectResult>(result);
             }
 
             [Fact]
             public void Should_not_get_appointments_out_of_given_range()
             {
-                // To be implemented
+                var dto = new AppointmentGetByDateDto()
+                {
+                   StartDate = DateTime.Now,
+                   EndDate = DateTime.Now
+                };
+                var result = _controller.GetAppointmentsByDate(dto);
+                _repository.Verify(x => x.GetByDate(dto.StartDate,dto.EndDate), Times.Once);
+                Assert.NotNull(result);
+                Assert.IsType<OkObjectResult>(result);
             }
         }
 
