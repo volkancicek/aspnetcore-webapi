@@ -4,15 +4,17 @@ An ASP.NET Core (v2.2) Web API project which consists basic endpoints to store a
 # Build & Run
 
 * Visual Studio
+
 Open the solution file <code>AspNetCore.WebApi.sln</code> and build/run.
 
 * Visual Studio Code
+
 Open the <code>src</code> folder and <code>F5</code> to build/run.
 
 
 # Swagger UI
 Basic information about the API endpoints can be found at the Swagger UI which is available with default url.
-[http://localhost:62769/index.html]
+<http://localhost:62769/index.html>
 
 Enpoints:
 - GET `/api/appointment/{id}` - Gets single appointment.
