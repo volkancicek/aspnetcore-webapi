@@ -3,18 +3,45 @@ An ASP.NET Core (v2.2) Web API project which consists basic endpoints to store a
 
 # Build & Run
 
-* Visual Studio
+* With Visual Studio
 
 Open the solution file <code>AspNetCore.WebApi.sln</code> and build/run.
 
-* Docker
+* With Command
 
+Install .Net Core 2.2
 
+<https://dotnet.microsoft.com/download>
+
+Check installed dotnet core version with:
+
+`dotnet --version`
+
+Open the folder `/Aspnet.Core.Web.Api` and run the following commands:
+
+`dotnet build`
+
+`dotnet run`
+
+Application will be running at:
+<http://localhost:<DEFAULT_PORT>
+
+* With Docker
+
+Install Docker 
+
+<https://docs.docker.com/install/>
+
+Open the folder `/Aspnet.Core.Web.Api` and run the following commands:
+
+`docker build -t aspnetapp .`
+
+`docker run -d -p 8080:80 --name myapp AspNetCore.WebApi`
 
 
 # Swagger UI
 Basic information about the API endpoints can be found at the Swagger UI which is available with default url.
-<http://localhost:62769/index.html>
+<http://localhost:<DEFAULT_PORT>/index.html>
 
 Enpoints:
 - GET `/api/appointment/{id}` - Gets single appointment.
