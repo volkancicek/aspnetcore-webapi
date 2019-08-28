@@ -7,9 +7,9 @@ An ASP.NET Core (v2.2) Web API project which consists basic endpoints to store a
 
 Open the solution file <code>AspNetCore.WebApi.sln</code> and build/run.
 
-* Visual Studio Code
+* Docker
 
-Open the <code>src</code> folder and <code>F5</code> to build/run.
+
 
 
 # Swagger UI
