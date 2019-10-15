@@ -1,5 +1,5 @@
 # ASP.NET Core (v2.2) Web API project
-An ASP.NET Core (v2.2) Web API project which consists basic endpoints to store and manage appointments for a car service.
+An ASP.NET Core (v2.2) Web API project which consists basic endpoints to store and manage appointments.
 
 # Build & Run
 
@@ -34,14 +34,14 @@ Install Docker
 
 Open the folder `/Aspnet.Core.Web.Api` and run the following commands:
 
-`docker build -t aspnetapp .`
+`docker image build -t netcoreapi:1.0 .`
 
-`docker run -d -p 8080:80 --name myapp AspNetCore.WebApi`
+`docker run -d -p 8080:80 --name myapp netcoreapi:1.0`
 
 
 # Swagger UI
 Basic information about the API endpoints can be found at the Swagger UI which is available with default url.
-<http://localhost:<DEFAULT_PORT>/index.html>
+<http://localhost:8080/index.html>
 
 Enpoints:
 - GET `/api/appointment/{id}` - Gets single appointment.
