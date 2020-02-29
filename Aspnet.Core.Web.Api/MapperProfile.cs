@@ -1,10 +1,6 @@
 ﻿using AspNetCore.WebApi.Dtos;
 using AspNetCore.WebApi.Entities;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AspNetCore.WebApi
 {

@@ -1,21 +1,15 @@
 using System.Linq;
-using System.Net;
 using AspNetCore.WebApi.Controllers;
 using AspNetCore.WebApi.Entities;
 using AspNetCore.WebApi.Repositories;
-using GenFu;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.Threading.Tasks;
 using Xunit;
 using AspNetCore.WebApi.Dtos;
 using AutoMapper;
 using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.JsonPatch.Operations;
-using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace AspNetCore.WebApi.Test

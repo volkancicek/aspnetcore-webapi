@@ -1,6 +1,4 @@
-﻿using AspNetCore.WebApi.Dtos;
-using AspNetCore.WebApi.Entities;
-using AspNetCore.WebApi.Helpers;
+﻿using AspNetCore.WebApi.Helpers;
 using AspNetCore.WebApi.Repositories;
 using AspNetCore.WebApi.Services;
 using AutoMapper;
